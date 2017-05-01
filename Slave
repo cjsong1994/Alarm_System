@@ -1,0 +1,57 @@
+boolean previousState;
+boolean state;
+boolean swState;      // 穩定後的按鈕狀態
+boolean tonestate = false;  
+int redled=12;
+String inputString = "";         // a string to hold incoming data
+boolean stringComplete = false;  // whether the string is complete
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(redled, OUTPUT);
+  digitalWrite(redled,LOW);
+ 
+}
+
+void loop() {
+   if (stringComplete) {
+     if (inputString.charAt(0) == 'N') {  
+        digitalWrite(redled,LOW);
+        tonestate = false; 
+      }
+    }
+   previousState = digitalRead(2);      // 讀取第一次按鈕狀態
+   delay(10);      // 隔 10 毫秒後再讀取第二次狀態
+   state = digitalRead(2);
+   if(state == previousState)     //如果兩次狀態相同，判定按鈕狀態穩定
+   {
+   swState = state; // 判定按鈕狀態
+   }
+   if(swState ==HIGH){
+       Serial.println("BB");
+        tonestate = true; 
+    }
+    if(tonestate){
+       digitalWrite(redled,HIGH);
+   
+      }else{
+          digitalWrite(redled,LOW);
+         
+        }
+    inputString = "";
+    stringComplete = false;
+}
+void serialEvent() {
+  while (Serial.available()) {
+    // get the new byte:
+    char inChar = (char)Serial.read(); 
+    // add it to the inputString:
+    inputString += inChar;
+    // if the incoming character is a newline, set a flag
+    // so the main loop can do something about it:
+    if (inChar == '\n') {
+      stringComplete = true;
+    } 
+  }
+}
