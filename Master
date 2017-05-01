@@ -1,0 +1,68 @@
+const int buttonPin1 = 2;     // the number of the pushbutton pin
+const int buttonPin2 = 3;
+const int bz = 4;
+String inputString = "";         // a string to hold incoming data
+boolean stringComplete = false;  // whether the string is complete
+boolean tonestate = false;
+int buttonState1 = 0;         // variable for reading the pushbutton status
+int buttonState2 = 0;
+char item[] = {'A', 'B'};
+int  Led[] = {12, 13};
+void setup() {
+
+  Serial.begin(9600);
+  pinMode(buttonPin1, INPUT);
+  pinMode(buttonPin2, INPUT);
+  pinMode(12, OUTPUT);
+  pinMode(13, OUTPUT);
+  pinMode(bz, OUTPUT);
+  digitalWrite(bz, LOW);
+  digitalWrite(12, HIGH);
+  digitalWrite(13, HIGH);
+}
+
+void loop() {
+
+  buttonState1 = digitalRead(buttonPin1);
+  buttonState2 = digitalRead(buttonPin2);
+
+  if (buttonState1 == HIGH) {
+    Serial.println("N");
+    digitalWrite(13, HIGH);
+    digitalWrite(bz, LOW);
+  }
+  if (buttonState2 == HIGH) {
+    Serial.println("N");
+    digitalWrite(12, HIGH);
+    digitalWrite(bz, LOW);
+  }
+
+  if (stringComplete) {
+    for (int i = 0; i < 2; i++) {
+      if (inputString.charAt(0) == item[i]) {
+        digitalWrite(Led[i], LOW);
+        digitalWrite(bz, HIGH);
+      }
+    }
+
+    
+    inputString = "";
+    stringComplete = false;
+  }
+  delay(30);
+}
+
+void serialEvent() {
+  while (Serial.available()) {
+    // get the new byte:
+    char inChar = (char)Serial.read();
+    // add it to the inputString:
+    inputString += inChar;
+    // if the incoming character is a newline, set a flag
+    // so the main loop can do something about it:
+    if (inChar == '\n') {
+      stringComplete = true;
+    }
+  }
+}
+
