@@ -4,8 +4,8 @@ const int bz = 4;
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 boolean tonestate = false;
-int buttonState1 = 0;         // variable for reading the pushbutton status
-int buttonState2 = 0;
+boolean buttonState1 ;        
+boolean buttonState2 ;
 char item[] = {'A', 'B'};
 int  Led[] = {12, 13};
 void setup() {
